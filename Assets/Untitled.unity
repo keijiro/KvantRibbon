@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f6a516d891854931acf7fb785c812ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _intensity: .800000012
+  _intensity: 1
   _sampleRadius: 1
   _rangeCheck: 1
   _fallOffDistance: 100
@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5099e599bb2c14524a94d26db16cf7c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ribbonCount: 1000
+  _ribbonCount: 300
   _historyLength: 120
   _minAcceleration: 1
   _maxAcceleration: 3
@@ -356,6 +356,12 @@ MonoBehaviour:
   _noiseFrequency: .219999999
   _noiseSpeed: .300000012
   _noiseVariance: 3
+  _ribbonWidth: .0799999982
+  _color: {r: 1, g: 1, b: 1, a: 1}
+  _metallic: .848999977
+  _smoothness: .782999992
+  _castShadows: 1
+  _receiveShadows: 1
   _randomSeed: 0
   _kernelShader: {fileID: 4800000, guid: 93f0d24ee31b74b419c4eff10f27c931, type: 3}
   _ribbonShader: {fileID: 4800000, guid: 33be016226e0148eea3a9a83a2223150, type: 3}
