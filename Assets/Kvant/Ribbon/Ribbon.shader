@@ -11,6 +11,7 @@ Shader "Custom/Ribbon"
     Properties
     {
         _PositionTex ("-", 2D) = ""{}
+        _Color ("-", Color) = (1, 1, 1, 1)
     }
     SubShader
     {
@@ -23,6 +24,11 @@ Shader "Custom/Ribbon"
 
         sampler2D _PositionTex;
         float4 _PositionTex_TexelSize;
+
+        float _RibbonWidth;
+        half4 _Color;
+        half _Metallic;
+        half _Smoothness;
 
         float2 _BufferOffset;
 
@@ -40,16 +46,15 @@ Shader "Custom/Ribbon"
 
             float3 n = normalize(cross(p1, p2));
 
-            v.vertex.xyz = n * v.vertex.x * 0.1 + p1.xyz;
+            v.vertex.xyz = n * v.vertex.x * _RibbonWidth + p1.xyz;
             v.normal = n;
-            //v.vertex.xyz += p.w;
         }
 
         void surf(Input IN, inout SurfaceOutputStandard o)
         {
-            o.Albedo = half4(1, 0.8, 0.8, 1);
-            o.Metallic = 0.85;
-            o.Smoothness = 0.85;
+            o.Albedo = _Color;
+            o.Metallic = _Metallic;
+            o.Smoothness = _Smoothness;
         }
 
         ENDCG

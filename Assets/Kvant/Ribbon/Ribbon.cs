@@ -2,6 +2,7 @@
 // Ribbon - flowing ribbon animation
 //
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Kvant
 {
@@ -114,6 +115,38 @@ namespace Kvant
 
         #endregion
 
+        #region Render Settings
+
+        [SerializeField]
+        float _ribbonWidth = 0.1f;
+
+        [SerializeField]
+        Color _color = Color.white;
+
+        [SerializeField, Range(0, 1)]
+        float _metallic = 0.5f;
+
+        [SerializeField, Range(0, 1)]
+        float _smoothness = 0.5f;
+
+        [SerializeField]
+        ShadowCastingMode _castShadows;
+
+        public ShadowCastingMode castShadows {
+            get { return _castShadows; }
+            set { _castShadows = value; }
+        }
+
+        [SerializeField]
+        bool _receiveShadows = false;
+
+        public bool receiveShadows {
+            get { return _receiveShadows; }
+            set { _receiveShadows = value; }
+        }
+
+        #endregion
+
         #region Misc Settings
 
         [SerializeField]
@@ -200,8 +233,8 @@ namespace Kvant
                 var v = iny * y;
                 for (var x = 0; x < nx; x++)
                 {
-                    va[offs] = Vector3.zero;// + Random.insideUnitSphere;
-                    va[offs + 1] = Vector3.one;// + Random.insideUnitSphere;
+                    va[offs] = Vector3.right * -0.5f;
+                    va[offs + 1] = Vector3.right * 0.5f;
                     ta[offs] = ta[offs + 1] = new Vector2(inx * x, v);
                     offs += 2;
                 }
@@ -270,6 +303,10 @@ namespace Kvant
         {
             var m = _ribbonMaterial;
 
+            m.SetFloat("_RibbonWidth", _ribbonWidth);
+            m.SetColor("_Color", _color);
+            m.SetFloat("_Metallic", _metallic);
+            m.SetFloat("_Smoothness", _smoothness);
             m.SetTexture("_PositionTex", _positionBuffer2);
             m.SetTexture("_VelocityTex", _velocityBuffer2);
         }
@@ -365,7 +402,9 @@ namespace Kvant
             {
                 uv.y = (0.5f + i) / total;
                 props.SetVector("_BufferOffset", uv);
-                Graphics.DrawMesh(_mesh, matrix, _ribbonMaterial, 0, null, 0, props);
+                Graphics.DrawMesh(
+                    _mesh, matrix, _ribbonMaterial, 0, null, 0, props,
+                    _castShadows, _receiveShadows);
             }
         }
 
