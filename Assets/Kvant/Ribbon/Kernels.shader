@@ -27,13 +27,13 @@ Shader "Hidden/Kvant/Swarm/Kernel"
     float4 _PositionTex_TexelSize;
     float4 _VelocityTex_TexelSize;
 
-    float3 _AttractPos;
     float2 _Acceleration; // (min, max)
-    float _Spread;
     float _Damp;
+    float3 _AttractPos;
+    float _Spread;
+    float3 _Flow;
     float4 _NoiseParams; // (frequency, amplitude, animation, variance)
     float _RandomSeed;
-    float3 _Flow;
     float2 _FrameTime; // (current, delta)
 
     // Pseudo random number generator

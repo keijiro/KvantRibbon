@@ -14,10 +14,6 @@ namespace Kvant
         [SerializeField]
         int _ribbonCount = 32;
 
-        public int TotalRibbonCount {
-            get { return _ribbonCount - _ribbonCount % DrawCount; }
-        }
-
         [SerializeField]
         int _historyLength = 32;
 
@@ -120,6 +116,11 @@ namespace Kvant
         [SerializeField]
         float _ribbonWidth = 0.1f;
 
+        public float ribbonWidth {
+            get { return _ribbonWidth; }
+            set { _ribbonWidth = value; }
+        }
+
         public enum ColorMode { Random, Smooth }
 
         [SerializeField]
@@ -133,14 +134,34 @@ namespace Kvant
         [SerializeField]
         Color _color = Color.white;
 
+        public Color color {
+            get { return _color; }
+            set { _color = value; }
+        }
+
         [SerializeField]
         Color _color2 = Color.white;
+
+        public Color color2 {
+            get { return _color2; }
+            set { _color2 = value; }
+        }
 
         [SerializeField, Range(0, 1)]
         float _metallic = 0.5f;
 
+        public float metallic {
+            get { return _metallic; }
+            set { _metallic = value; }
+        }
+
         [SerializeField, Range(0, 1)]
         float _smoothness = 0.5f;
+
+        public float smoothness {
+            get { return _smoothness; }
+            set { _smoothness = value; }
+        }
 
         [SerializeField]
         ShadowCastingMode _castShadows;
@@ -192,6 +213,11 @@ namespace Kvant
                 if (total < 65000) return 1;
                 return total / 65000 + 1;
             }
+        }
+
+        // Returns the actual total number of ribbons.
+        public int TotalRibbonCount {
+            get { return _ribbonCount - _ribbonCount % DrawCount; }
         }
 
         // Returns how many ribbons in one draw call.
@@ -285,7 +311,7 @@ namespace Kvant
             return mesh;
         }
 
-        void UpdateKernelShader()
+        void UpdateKernelShader(int editorFrame = 0)
         {
             var m = _kernelMaterial;
 
@@ -296,7 +322,11 @@ namespace Kvant
             m.SetVector("_Flow", _flow);
             m.SetVector("_NoiseParams", new Vector4(_noiseFrequency, _noiseAmplitude, _noiseSpeed, _noiseVariance));
             m.SetFloat("_RandomSeed", _randomSeed);
-            m.SetVector("_FrameTime", new Vector2((float)Time.frameCount / 60, 1.0f / 60));
+
+            if (Application.isPlaying)
+                m.SetVector("_FrameTime", new Vector2(Time.time, Time.smoothDeltaTime));
+            else
+                m.SetVector("_FrameTime", new Vector2(0.1f * editorFrame, 0.1f));
 
             m.SetTexture("_PositionTex", _positionBuffer1);
             m.SetTexture("_VelocityTex", _velocityBuffer1);
@@ -321,6 +351,7 @@ namespace Kvant
             m.SetColor("_Color2", _color2);
             m.SetFloat("_Metallic", _metallic);
             m.SetFloat("_Smoothness", _smoothness);
+
             m.SetTexture("_PositionTex", _positionBuffer2);
             m.SetTexture("_VelocityTex", _velocityBuffer2);
 
@@ -391,24 +422,19 @@ namespace Kvant
                 // Execute the kernel shaders.
                 SwapBuffers();
                 UpdateKernelShader();
-                Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
                 Graphics.Blit(_velocityBuffer1, _velocityBuffer2, _kernelMaterial, 3);
-
-                SwapBuffers();
-                UpdateKernelShader();
                 Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
-                Graphics.Blit(_velocityBuffer1, _velocityBuffer2, _kernelMaterial, 3);
             }
             else
             {
                 // Reset and execute the kernel shaders repeatedly.
-                Graphics.Blit(null, _positionBuffer2, _kernelMaterial, 0);
                 Graphics.Blit(null, _velocityBuffer2, _kernelMaterial, 1);
+                Graphics.Blit(null, _positionBuffer2, _kernelMaterial, 0);
                 for (var i = 0; i < 32; i++) {
                     SwapBuffers();
-                    UpdateKernelShader();
-                    Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
+                    UpdateKernelShader(i);
                     Graphics.Blit(_velocityBuffer1, _velocityBuffer2, _kernelMaterial, 3);
+                    Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
                 }
             }
 
