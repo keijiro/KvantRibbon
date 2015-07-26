@@ -296,8 +296,7 @@ namespace Kvant
             m.SetVector("_Flow", _flow);
             m.SetVector("_NoiseParams", new Vector4(_noiseFrequency, _noiseAmplitude, _noiseSpeed, _noiseVariance));
             m.SetFloat("_RandomSeed", _randomSeed);
-            //m.SetFloat("_DeltaTime", Application.isPlaying ? Time.smoothDeltaTime : 0.1f);
-            m.SetFloat("_DeltaTime", 1.0f / 60);
+            m.SetVector("_FrameTime", new Vector2((float)Time.frameCount / 60, 1.0f / 60));
 
             m.SetTexture("_PositionTex", _positionBuffer1);
             m.SetTexture("_VelocityTex", _velocityBuffer1);
