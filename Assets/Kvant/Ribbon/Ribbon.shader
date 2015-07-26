@@ -14,31 +14,36 @@ Shader "Custom/Ribbon"
         _Color ("-", Color) = (1, 1, 1, 1)
         _Color2 ("-", Color) = (1, 1, 1, 1)
     }
+
+    CGINCLUDE
+
+    #pragma multi_compile COLOR_RANDOM COLOR_SMOOTH
+
+    sampler2D _PositionTex;
+    float4 _PositionTex_TexelSize;
+
+    float _RibbonWidth;
+    half4 _Color;
+    half4 _Color2;
+    half _Metallic;
+    half _Smoothness;
+
+    float2 _BufferOffset;
+
+    struct Input {
+        half color;
+    };
+
+    ENDCG
+
     SubShader
     {
         Tags { "RenderType"="Opaque" }
 
-        //Cull Back 
-        
         CGPROGRAM
 
         #pragma surface surf Standard vertex:vert nolightmap addshadow
         #pragma target 3.0
-
-        sampler2D _PositionTex;
-        float4 _PositionTex_TexelSize;
-
-        float _RibbonWidth;
-        half4 _Color;
-        half4 _Color2;
-        half _Metallic;
-        half _Smoothness;
-
-        float2 _BufferOffset;
-
-        struct Input {
-            half color;
-        };
 
         void vert(inout appdata_full v, out Input data)
         {
@@ -58,7 +63,11 @@ Shader "Custom/Ribbon"
             v.vertex.xyz = bn * v.vertex.x * _RibbonWidth * p.w + p1.xyz;
             v.normal = normalize(cross(bn, p2 - p1));
 
+#if COLOR_RANDOM
             data.color = p.w;
+#else
+            data.color = uv.y;
+#endif
         }
 
         void surf(Input IN, inout SurfaceOutputStandard o)
@@ -70,27 +79,10 @@ Shader "Custom/Ribbon"
 
         ENDCG
 
-        //Cull Front
-        
         CGPROGRAM
 
         #pragma surface surf Standard vertex:vert nolightmap addshadow
         #pragma target 3.0
-
-        sampler2D _PositionTex;
-        float4 _PositionTex_TexelSize;
-
-        float _RibbonWidth;
-        half4 _Color;
-        half4 _Color2;
-        half _Metallic;
-        half _Smoothness;
-
-        float2 _BufferOffset;
-
-        struct Input {
-            half color;
-        };
 
         void vert(inout appdata_full v, out Input data)
         {
@@ -110,7 +102,11 @@ Shader "Custom/Ribbon"
             v.vertex.xyz = -bn * v.vertex.x * _RibbonWidth * p.w + p1.xyz;
             v.normal = -normalize(cross(bn, p2 - p1));
 
+#if COLOR_RANDOM
             data.color = p.w;
+#else
+            data.color = uv.y;
+#endif
         }
 
         void surf(Input IN, inout SurfaceOutputStandard o)

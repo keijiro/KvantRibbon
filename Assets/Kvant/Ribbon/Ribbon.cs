@@ -120,6 +120,16 @@ namespace Kvant
         [SerializeField]
         float _ribbonWidth = 0.1f;
 
+        public enum ColorMode { Random, Smooth }
+
+        [SerializeField]
+        ColorMode _colorMode = ColorMode.Random;
+
+        public ColorMode colorMode {
+            get { return _colorMode; }
+            set { _colorMode = value; }
+        }
+
         [SerializeField]
         Color _color = Color.white;
 
@@ -314,6 +324,11 @@ namespace Kvant
             m.SetFloat("_Smoothness", _smoothness);
             m.SetTexture("_PositionTex", _positionBuffer2);
             m.SetTexture("_VelocityTex", _velocityBuffer2);
+
+            if (_colorMode == ColorMode.Smooth)
+                m.EnableKeyword("COLOR_SMOOTH");
+            else
+                m.DisableKeyword("COLOR_SMOOTH");
         }
 
         void ResetResources()
