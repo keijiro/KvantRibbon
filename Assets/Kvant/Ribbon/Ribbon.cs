@@ -123,6 +123,9 @@ namespace Kvant
         [SerializeField]
         Color _color = Color.white;
 
+        [SerializeField]
+        Color _color2 = Color.white;
+
         [SerializeField, Range(0, 1)]
         float _metallic = 0.5f;
 
@@ -283,7 +286,8 @@ namespace Kvant
             m.SetVector("_Flow", _flow);
             m.SetVector("_NoiseParams", new Vector4(_noiseFrequency, _noiseAmplitude, _noiseSpeed, _noiseVariance));
             m.SetFloat("_RandomSeed", _randomSeed);
-            m.SetFloat("_DeltaTime", Application.isPlaying ? Time.smoothDeltaTime : 0.1f);
+            //m.SetFloat("_DeltaTime", Application.isPlaying ? Time.smoothDeltaTime : 0.1f);
+            m.SetFloat("_DeltaTime", 1.0f / 60);
 
             m.SetTexture("_PositionTex", _positionBuffer1);
             m.SetTexture("_VelocityTex", _velocityBuffer1);
@@ -305,6 +309,7 @@ namespace Kvant
 
             m.SetFloat("_RibbonWidth", _ribbonWidth);
             m.SetColor("_Color", _color);
+            m.SetColor("_Color2", _color2);
             m.SetFloat("_Metallic", _metallic);
             m.SetFloat("_Smoothness", _smoothness);
             m.SetTexture("_PositionTex", _positionBuffer2);
@@ -370,6 +375,11 @@ namespace Kvant
             if (Application.isPlaying)
             {
                 // Execute the kernel shaders.
+                SwapBuffers();
+                UpdateKernelShader();
+                Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
+                Graphics.Blit(_velocityBuffer1, _velocityBuffer2, _kernelMaterial, 3);
+
                 SwapBuffers();
                 UpdateKernelShader();
                 Graphics.Blit(_positionBuffer1, _positionBuffer2, _kernelMaterial, 2);
