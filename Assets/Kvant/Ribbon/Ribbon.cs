@@ -324,9 +324,9 @@ namespace Kvant
             m.SetFloat("_RandomSeed", _randomSeed);
 
             if (Application.isPlaying)
-                m.SetVector("_FrameTime", new Vector2(Time.time, Time.smoothDeltaTime));
+                m.SetVector("_TimeParams", new Vector2(Time.time, Time.smoothDeltaTime));
             else
-                m.SetVector("_FrameTime", new Vector2(0.1f * editorFrame, 0.1f));
+                m.SetVector("_TimeParams", new Vector2(0.1f * editorFrame, 0.1f));
 
             m.SetTexture("_PositionTex", _positionBuffer1);
             m.SetTexture("_VelocityTex", _velocityBuffer1);
