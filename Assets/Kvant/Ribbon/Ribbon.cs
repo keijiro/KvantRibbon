@@ -237,14 +237,14 @@ namespace Kvant
             var iny = 1.0f / TotalRibbonCount;
 
             // vertex and texcoord array
-            var va = new Vector3[nx * ny * 2];
-            var ta = new Vector2[nx * ny * 2];
+            var va = new Vector3[(nx - 2) * ny * 2];
+            var ta = new Vector2[(nx - 2) * ny * 2];
 
             var offs = 0;
             for (var y = 0; y < ny; y++)
             {
                 var v = iny * y;
-                for (var x = 0; x < nx; x++)
+                for (var x = 1; x < nx - 1; x++)
                 {
                     va[offs] = Vector3.right * -0.5f;
                     va[offs + 1] = Vector3.right * 0.5f;
@@ -254,12 +254,12 @@ namespace Kvant
             }
 
             // index array
-            var ia = new int[ny * (nx - 1) * 6];
+            var ia = new int[ny * (nx - 3) * 6];
             offs = 0;
             for (var y = 0; y < ny; y++)
             {
-                var vi = y * nx * 2;
-                for (var x = 0; x < nx - 1; x++)
+                var vi = y * (nx - 2) * 2;
+                for (var x = 0; x < nx - 3; x++)
                 {
                     ia[offs++] = vi;
                     ia[offs++] = vi + 1;
