@@ -52,9 +52,9 @@ Shader "Custom/Ribbon"
         float ln = uv.y;
 
         // adjacent vertices
-        float3 p1 = tex2Dlod(_PositionTex, uv - duv).xyz;
-        float3 p2 = tex2Dlod(_PositionTex, uv      ).xyz;
-        float3 p3 = tex2Dlod(_PositionTex, uv + duv).xyz;
+        float3 p1 = tex2Dlod(_PositionTex, uv - duv * 2).xyz;
+        float3 p2 = tex2Dlod(_PositionTex, uv          ).xyz;
+        float3 p3 = tex2Dlod(_PositionTex, uv + duv * 2).xyz;
 
         // binormal vector
         float3 bn = normalize(cross(p3 - p2, p2 - p1)) * flip;
